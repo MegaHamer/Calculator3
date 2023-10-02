@@ -23,7 +23,8 @@ namespace Calculator3
             this.btnMinus.Click += new EventHandler(buttonUse);
             this.btnRazdel.Click += new EventHandler(buttonUse);
             this.btnUmn.Click += new EventHandler(buttonUse);
-            this.btnAnswer.Click += new EventHandler(buttonUse);
+            //this.btnAnswer.Click += new EventHandler(buttonUse);
+            this.btnAnswer.Click += new EventHandler(buttonAnswer);
         }
 
         private void btnAnswer_Click(object sender, EventArgs e)
@@ -58,28 +59,31 @@ namespace Calculator3
         }
         private void buttonAnswer(object sender, EventArgs e)
         {
-            int accum;
-            int perem;
-            string strPerem;
             string primer = txtB1.Text;
-            for (int i = 0; i < primer.Length; i++)
-            {
-                bool result = char.IsDigit(primer[i]);
-                if (result != true)
-                {
+          //  if (inScobka(primer,))
+          repeat(primer,0,primer.Length-1);
+        }
+        public void repeat(string primer, int ot, int ido)
+        {
 
-                }
+            if (oper(primer) > 0)
+            {
+                //MessageBox.Show(left(primer, oper(primer)).ToString());
+                double ch1 =chislo(primer, left(primer, oper(primer)), oper(primer)-1);
+                double ch2 =chislo(primer, right(primer, oper(primer)), oper(primer) + 1);
+                MessageBox.Show(resOfOper(ch1, ch2, primer[oper(primer)]).ToString());
+
             }
         }
-        private double chislo(string diap, int ot, int ido)//выдает число типа дабл если дать диапозон числа
+        public double chislo(string diap, int ot, int ido)//выдает число типа дабл если дать диапозон числа
         {
             NumberFormatInfo provider = new NumberFormatInfo();
             provider.NumberDecimalSeparator = ",";
             provider.NumberGroupSeparator = ".";
             provider.NumberGroupSizes = new int[] { 3 };
-            return Convert.ToDouble(diap.Substring(ot, ido - ot + 1),provider);
+            return Convert.ToDouble(diap.Substring(ot, ido - ot+1),provider);
         }
-        private int oper(string diap, int ot, int ido)//выдает идентификатор самой приоритетной операции
+        public int oper(string diap)//выдает идентификатор самой приоритетной операции
         {
             char[] operatori = { '/', '*', '+', '-' };
             for (int j = 0; j < operatori.Length; j++)
@@ -95,7 +99,7 @@ namespace Calculator3
             return -1;
             
         }
-        private double resOfOper(double ch1,double ch2, char oper)//производит операции над числами
+        public double resOfOper(double ch1,double ch2, char oper)//производит операции над числами
         {
             switch (oper)
             {
@@ -106,38 +110,39 @@ namespace Calculator3
                 default: return 0;break;
             }
         }
-        private void zamena(ref string ishod,string vstavka,int ot,int ido)//делаю текст с заменой от идо на вставку
+        public void zamena(ref string ishod,string vstavka,int ot,int ido)//делаю текст с заменой от идо на вставку
         {
             string result = ishod.Substring(0,ot);
             result += vstavka;
             result += ishod.Substring(ido + 1, ishod.Length - ido - 1);
             ishod = result;
         }
-        private int right(string diap,int i)//ищет крайнюю цифру в числе
+        public int right(string diap,int i)//ищет крайнюю цифру в числе
         {
             for (int j = i+1; j < diap.Length; j++)
             {
-                if (char.IsDigit(diap[i])!=true)
+                if (char.IsDigit(diap[j])!=true)
                 {
                     return j - 1;
                 }
             }
             return diap.Length-1;
         }
-        private int left(string diap,int i)//ищет крайнюю цифру в числе
+        public int left(string diap,int i)//ищет крайнюю цифру в числе
         {
             for (int j = i-1;j >= 0; j--)
             {
-                if (char.IsDigit(diap[i]) != true)
+                bool result = char.IsDigit(diap[j]);
+                if (result == false)
                 {
                     return j + 1;
                 }
             }
             return 0;
         }
-        private Boolean inScobka (string diap, ref int leftScobka, ref int rightScobka)//возвращает id скобок тк проверяет наличие скобок
+        public bool inScobka (string diap, ref int leftScobka, ref int rightScobka)//возвращает id скобок тк проверяет наличие скобок
         {
-            Boolean result = false;
+            bool result = false;
             int counterOfleftScobok = 0;
             for (int i=0;i<diap.Length ;i++)
             {
@@ -157,5 +162,6 @@ namespace Calculator3
             }
             return result;
         }
+        
     }
 }
