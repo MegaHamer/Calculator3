@@ -283,6 +283,7 @@
             Controls.Add(btn8);
             Controls.Add(btn7);
             Controls.Add(txtB1);
+            MinimumSize = new Size(447, 521);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);

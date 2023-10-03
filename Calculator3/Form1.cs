@@ -52,26 +52,19 @@ namespace Calculator3
                 else
                 {
                     //если ноль до запятой-меняю
-                    if (txtB1.Text[left(txtB1.Text, txtB1.Text.Length - 1)] == '0' && rightDot(txtB1.Text,left(txtB1.Text, txtB1.Text.Length - 1))<0)
+                    if (txtB1.Text[left(txtB1.Text, txtB1.Text.Length - 1)] == '0' && rightDot(txtB1.Text, left(txtB1.Text, txtB1.Text.Length - 1)) < 0)
                     {
-                            string text = txtB1.Text;
-                            int ind = text.Length - 1;
-                            text = text.Remove(left(txtB1.Text, txtB1.Text.Length - 1));
-                            txtB1.Text = text + textBut;
-                            //MessageBox.Show("gg"+ txtB1.Text[right(txtB1.Text, txtB1.Text.Length - 1)] + "gg");
+                        string text = txtB1.Text;
+                        int ind = text.Length - 1;
+                        text = text.Remove(left(txtB1.Text, txtB1.Text.Length - 1));
+                        txtB1.Text = text + textBut;
+                        //MessageBox.Show("gg"+ txtB1.Text[right(txtB1.Text, txtB1.Text.Length - 1)] + "gg");
                     }
                     else
                     {
                         txtB1.Text += textBut;
                     }
                 }
-                /*else
-                {
-                    if (txtB1.Text[left(txtB1.Text, txtB1.Text.Length - 1)+1] == ',')
-                    {
-
-                    }
-                }*/
             }
             else
             {
@@ -82,34 +75,65 @@ namespace Calculator3
                 }
                 else //если последний символ не число
                 {
-                    if(txtB1.Text.Last()!=' ')
+                    if (txtB1.Text.Last() != ' ')
                     {
                         string text = txtB1.Text;
                         int ind = text.Length - 1;
                         text = text.Remove(ind);
                         txtB1.Text = text + textBut;
                     }
-                    
+
                 }
             }
         }
         private void buttonAnswer(object sender, EventArgs e)
         {
-            string primer = txtB1.Text;
-            //  if (inScobka(primer,))
-            repeat();
+            int ot = 0;
+            int ido = txtB1.Text.Length - 1;
+            repeat(ot,ido);
         }
-        public void repeat()
+        public void repeat( int nn , int kk)//для решения внутри скобок, если есть
         {
-
-            if (oper(txtB1.Text) > 0)
+            int ot = nn;
+            int ido = kk;//для скобок
+            int subnn = nn;
+            int subkk = kk;
+            if (inScobka(nn,kk,ref ot, ref ido)) //скобка в диапазоне
+            {
+                repeat(ot, ido);//начало рекурсии
+            }
+            else
+            {
+                if (!inScobka(0,txtB1.Text.Length-1,ref ot,ref ido)) //скобки во всей строке
+                {
+                    ot += 1;
+                    ido -= 1;
+                }
+                else
+                {
+                    ot = nn;
+                    ido = kk;
+                }
+                //MessageBox.Show("nn="+nn+" kk="+kk+" ot="+ot+" ido="+ido,"fe");
+            }
+            //MessageBox.Show("nn=" + nn + " kk=" + kk + " ot=" + ot + " ido=" + ido, "sub");
+            if (oper(txtB1.Text) < 0)
+            {
+                subnn = 0;
+                subkk = txtB1.Text.Length-1;
+                //MessageBox.Show("nn=" + subnn + " kk=" + subkk,"subbbb");
+            }
+            //MessageBox.Show("nn=" + subnn + " kk=" + subkk);
+            string sub = txtB1.Text.Substring(subnn,subkk-subnn+1);
+            if (oper(sub) > 0)//если есть опреаторы
             {
                 //MessageBox.Show(left(primer, oper(primer)).ToString());
-                double ch1 = chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text)), oper(txtB1.Text) - 1);
-                double ch2 = chislo(txtB1.Text, oper(txtB1.Text) + 1, right(txtB1.Text, oper(txtB1.Text)));
-                //MessageBox.Show(resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString());
-                txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString(), left(txtB1.Text, oper(txtB1.Text)), right(txtB1.Text, oper(txtB1.Text)));
-                repeat();
+                double ch1 = chislo(sub, left(sub, oper(sub)), oper(sub) - 1);
+                double ch2 = chislo(sub, oper(sub) + 1, right(sub, oper(sub)));
+                
+                txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, sub[oper(sub)]).ToString(), ot-1, ido+1); //left(sub, oper(sub)), right(sub, oper(sub)));
+                //MessageBox.Show(resOfOper(ch1, ch2, sub[oper(sub)]).ToString(),"resul");
+                repeat(0,txtB1.Text.Length-1);
             }
         }
         public double chislo(string diap, int ot, int ido)//выдает число типа дабл если дать диапозон числа
@@ -189,26 +213,27 @@ namespace Calculator3
             }
             return 0;
         }
-       
-        public bool inScobka(string diap, ref int leftScobka, ref int rightScobka)//возвращает id скобок тк проверяет наличие скобок
+
+        public bool inScobka(int ot, int ido, ref int leftScobka, ref int rightScobka)//возвращает id скобок тк проверяет наличие скобок
         {
             bool result = false;
             int counterOfleftScobok = 0;
-            for (int i = 0; i < diap.Length; i++)
+            for (int i = ot; i <= ido; i++)
             {
-                if (diap[i] == '(')
+                //MessageBox.Show(ot + " " + ido + " " + i,"scobki");
+                if (txtB1.Text[i] == '(')
                 {
                     counterOfleftScobok++;
                     if (counterOfleftScobok == 1)
                     {
-                        leftScobka = i;
+                        leftScobka = i+1;
                     }
                     result = true;
                 }
-                if (diap[i] == ')')
+                if (txtB1.Text[i] == ')')
                 {
                     counterOfleftScobok--;
-                    if (counterOfleftScobok == 0) { rightScobka = i; break; }
+                    if (counterOfleftScobok == 0) { rightScobka = i-1; break; }
                 }
             }
             return result;
@@ -223,11 +248,11 @@ namespace Calculator3
         {
             if (txtB1.Text.Length > 1)
             {
-            txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
             }
             else
             {
-            txtB1.Text = " ";
+                txtB1.Text = " ";
             }
         }
     }
