@@ -61,18 +61,19 @@ namespace Calculator3
         {
             string primer = txtB1.Text;
           //  if (inScobka(primer,))
-          repeat(primer,0,primer.Length-1);
+          repeat();
         }
-        public void repeat(string primer, int ot, int ido)
+        public void repeat()
         {
 
-            if (oper(primer) > 0)
+            if (oper(txtB1.Text) > 0)
             {
                 //MessageBox.Show(left(primer, oper(primer)).ToString());
-                double ch1 =chislo(primer, left(primer, oper(primer)), oper(primer)-1);
-                double ch2 =chislo(primer, right(primer, oper(primer)), oper(primer) + 1);
-                MessageBox.Show(resOfOper(ch1, ch2, primer[oper(primer)]).ToString());
-
+                double ch1 =chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text)), oper(txtB1.Text)-1);
+                double ch2 =chislo(txtB1.Text, oper(txtB1.Text) + 1, right(txtB1.Text, oper(txtB1.Text)));
+                //MessageBox.Show(resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString());
+                txtB1.Text=zamena(txtB1.Text, resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString(), left(txtB1.Text, oper(txtB1.Text)), right(txtB1.Text, oper(txtB1.Text)));
+                repeat();
             }
         }
         public double chislo(string diap, int ot, int ido)//выдает число типа дабл если дать диапозон числа
@@ -110,18 +111,19 @@ namespace Calculator3
                 default: return 0;break;
             }
         }
-        public void zamena(ref string ishod,string vstavka,int ot,int ido)//делаю текст с заменой от идо на вставку
+        public string zamena(string ishod,string vstavka,int ot,int ido)//делаю текст с заменой от идо на вставку
         {
             string result = ishod.Substring(0,ot);
             result += vstavka;
             result += ishod.Substring(ido + 1, ishod.Length - ido - 1);
-            ishod = result;
+            return result;
+            // 0 1 2 3+ 4 5
         }
         public int right(string diap,int i)//ищет крайнюю цифру в числе
         {
             for (int j = i+1; j < diap.Length; j++)
             {
-                if (char.IsDigit(diap[j])!=true)
+                if (char.IsDigit(diap[j])!=true && diap[j] != ',')
                 {
                     return j - 1;
                 }
@@ -133,7 +135,7 @@ namespace Calculator3
             for (int j = i-1;j >= 0; j--)
             {
                 bool result = char.IsDigit(diap[j]);
-                if (result == false)
+                if (result == false && diap[j]!=',')
                 {
                     return j + 1;
                 }
