@@ -108,33 +108,43 @@ namespace Calculator3
                 {
                     ot += 1;
                     ido -= 1;
+                    if (oper(txtB1.Text) > 0)
+                    {
+                        double ch1 = chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text)), oper(txtB1.Text) - 1);
+                        double ch2 = chislo(txtB1.Text, oper(txtB1.Text) + 1, right(txtB1.Text, oper(txtB1.Text)));
+
+                        txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString(), left(txtB1.Text, oper(txtB1.Text)), right(txtB1.Text, oper(txtB1.Text)));
+                        repeat(0, txtB1.Text.Length - 1);
+                    }
+                    
                 }
                 else
                 {
                     ot = nn;
                     ido = kk;
+                    if (oper(txtB1.Text) < 0)//если конечная рекурсия
+                    {
+                        subnn = 0;
+                        subkk = txtB1.Text.Length-1;
+                        //MessageBox.Show("nn=" + subnn + " kk=" + subkk,"subbbb");
+                    }
+                    //MessageBox.Show("nn=" + subnn + " kk=" + subkk);
+                    string sub = txtB1.Text.Substring(subnn,subkk-subnn+1);
+                    if (oper(sub) > 0)//если есть опреаторы
+                    {
+                        //MessageBox.Show(left(primer, oper(primer)).ToString());
+                        double ch1 = chislo(sub, left(sub, oper(sub)), oper(sub) - 1);
+                        double ch2 = chislo(sub, oper(sub) + 1, right(sub, oper(sub)));
+                
+                        txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, sub[oper(sub)]).ToString(), ot-1, ido+1); //left(sub, oper(sub)), right(sub, oper(sub)));
+                        //MessageBox.Show(resOfOper(ch1, ch2, sub[oper(sub)]).ToString(),"resul");
+                        repeat(0,txtB1.Text.Length-1);
+                    }
                 }
                 //MessageBox.Show("nn="+nn+" kk="+kk+" ot="+ot+" ido="+ido,"fe");
             }
             //MessageBox.Show("nn=" + nn + " kk=" + kk + " ot=" + ot + " ido=" + ido, "sub");
-            if (oper(txtB1.Text) < 0)
-            {
-                subnn = 0;
-                subkk = txtB1.Text.Length-1;
-                //MessageBox.Show("nn=" + subnn + " kk=" + subkk,"subbbb");
-            }
-            //MessageBox.Show("nn=" + subnn + " kk=" + subkk);
-            string sub = txtB1.Text.Substring(subnn,subkk-subnn+1);
-            if (oper(sub) > 0)//если есть опреаторы
-            {
-                //MessageBox.Show(left(primer, oper(primer)).ToString());
-                double ch1 = chislo(sub, left(sub, oper(sub)), oper(sub) - 1);
-                double ch2 = chislo(sub, oper(sub) + 1, right(sub, oper(sub)));
-                
-                txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, sub[oper(sub)]).ToString(), ot-1, ido+1); //left(sub, oper(sub)), right(sub, oper(sub)));
-                //MessageBox.Show(resOfOper(ch1, ch2, sub[oper(sub)]).ToString(),"resul");
-                repeat(0,txtB1.Text.Length-1);
-            }
+            
         }
         public double chislo(string diap, int ot, int ido)//выдает число типа дабл если дать диапозон числа
         {
@@ -142,6 +152,7 @@ namespace Calculator3
             provider.NumberDecimalSeparator = ",";
             provider.NumberGroupSeparator = ".";
             provider.NumberGroupSizes = new int[] { 3 };
+            MessageBox.Show(diap+"  ");
             return Convert.ToDouble(diap.Substring(ot, ido - ot + 1), provider);
         }
         public int oper(string diap)//выдает идентификатор самой приоритетной операции
