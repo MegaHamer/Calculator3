@@ -46,10 +46,12 @@
             btnDel = new Button();
             btnRazdel = new Button();
             btnUmn = new Button();
+            btnDot = new Button();
             SuspendLayout();
             // 
             // txtB1
             // 
+            txtB1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             txtB1.Font = new Font("Segoe UI", 25F, FontStyle.Regular, GraphicsUnit.Point);
             txtB1.Location = new Point(30, 10);
             txtB1.Name = "txtB1";
@@ -58,6 +60,7 @@
             // 
             // btn7
             // 
+            btn7.Anchor = AnchorStyles.None;
             btn7.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn7.Location = new Point(30, 164);
             btn7.Name = "btn7";
@@ -68,6 +71,7 @@
             // 
             // btn8
             // 
+            btn8.Anchor = AnchorStyles.None;
             btn8.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn8.Location = new Point(127, 164);
             btn8.Name = "btn8";
@@ -78,6 +82,7 @@
             // 
             // btn9
             // 
+            btn9.Anchor = AnchorStyles.None;
             btn9.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn9.Location = new Point(224, 164);
             btn9.Name = "btn9";
@@ -88,6 +93,7 @@
             // 
             // btn4
             // 
+            btn4.Anchor = AnchorStyles.None;
             btn4.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn4.Location = new Point(30, 243);
             btn4.Name = "btn4";
@@ -98,6 +104,7 @@
             // 
             // btn5
             // 
+            btn5.Anchor = AnchorStyles.None;
             btn5.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn5.Location = new Point(127, 243);
             btn5.Name = "btn5";
@@ -108,6 +115,7 @@
             // 
             // btn6
             // 
+            btn6.Anchor = AnchorStyles.None;
             btn6.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn6.Location = new Point(224, 243);
             btn6.Name = "btn6";
@@ -118,6 +126,7 @@
             // 
             // btn1
             // 
+            btn1.Anchor = AnchorStyles.None;
             btn1.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn1.Location = new Point(30, 321);
             btn1.Name = "btn1";
@@ -128,6 +137,7 @@
             // 
             // btn2
             // 
+            btn2.Anchor = AnchorStyles.None;
             btn2.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn2.Location = new Point(127, 321);
             btn2.Name = "btn2";
@@ -138,6 +148,7 @@
             // 
             // btn3
             // 
+            btn3.Anchor = AnchorStyles.None;
             btn3.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn3.Location = new Point(224, 321);
             btn3.Name = "btn3";
@@ -148,6 +159,7 @@
             // 
             // btn0
             // 
+            btn0.Anchor = AnchorStyles.None;
             btn0.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btn0.Location = new Point(127, 401);
             btn0.Name = "btn0";
@@ -158,6 +170,7 @@
             // 
             // btnPlus
             // 
+            btnPlus.Anchor = AnchorStyles.None;
             btnPlus.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btnPlus.Location = new Point(321, 164);
             btnPlus.Name = "btnPlus";
@@ -168,6 +181,7 @@
             // 
             // btnMinus
             // 
+            btnMinus.Anchor = AnchorStyles.None;
             btnMinus.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btnMinus.Location = new Point(321, 243);
             btnMinus.Name = "btnMinus";
@@ -178,6 +192,7 @@
             // 
             // btnAnswer
             // 
+            btnAnswer.Anchor = AnchorStyles.None;
             btnAnswer.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btnAnswer.Location = new Point(321, 321);
             btnAnswer.Name = "btnAnswer";
@@ -189,6 +204,7 @@
             // 
             // btnClear
             // 
+            btnClear.Anchor = AnchorStyles.None;
             btnClear.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btnClear.Location = new Point(30, 82);
             btnClear.Name = "btnClear";
@@ -196,9 +212,11 @@
             btnClear.TabIndex = 14;
             btnClear.Text = "C";
             btnClear.UseVisualStyleBackColor = true;
+            btnClear.Click += btnClear_Click;
             // 
             // btnDel
             // 
+            btnDel.Anchor = AnchorStyles.None;
             btnDel.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btnDel.Location = new Point(321, 82);
             btnDel.Name = "btnDel";
@@ -206,9 +224,11 @@
             btnDel.TabIndex = 15;
             btnDel.Text = "<x";
             btnDel.UseVisualStyleBackColor = true;
+            btnDel.Click += btnDel_Click;
             // 
             // btnRazdel
             // 
+            btnRazdel.Anchor = AnchorStyles.None;
             btnRazdel.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btnRazdel.Location = new Point(127, 82);
             btnRazdel.Name = "btnRazdel";
@@ -219,6 +239,7 @@
             // 
             // btnUmn
             // 
+            btnUmn.Anchor = AnchorStyles.None;
             btnUmn.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
             btnUmn.Location = new Point(224, 82);
             btnUmn.Name = "btnUmn";
@@ -227,11 +248,23 @@
             btnUmn.Text = "*";
             btnUmn.UseVisualStyleBackColor = true;
             // 
+            // btnDot
+            // 
+            btnDot.Anchor = AnchorStyles.None;
+            btnDot.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
+            btnDot.Location = new Point(224, 401);
+            btnDot.Name = "btnDot";
+            btnDot.Size = new Size(69, 53);
+            btnDot.TabIndex = 18;
+            btnDot.Text = ",";
+            btnDot.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(431, 482);
+            Controls.Add(btnDot);
             Controls.Add(btnUmn);
             Controls.Add(btnRazdel);
             Controls.Add(btnDel);
@@ -276,5 +309,6 @@
         private Button btnDel;
         private Button btnRazdel;
         private Button btnUmn;
+        private Button btnDot;
     }
 }
