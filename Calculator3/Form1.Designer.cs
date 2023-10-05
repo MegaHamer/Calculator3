@@ -47,6 +47,8 @@
             btnRazdel = new Button();
             btnUmn = new Button();
             btnDot = new Button();
+            btnLeftScobka = new Button();
+            btnRightScobka = new Button();
             SuspendLayout();
             // 
             // txtB1
@@ -259,11 +261,35 @@
             btnDot.Text = ",";
             btnDot.UseVisualStyleBackColor = true;
             // 
+            // btnLeftScobka
+            // 
+            btnLeftScobka.Anchor = AnchorStyles.None;
+            btnLeftScobka.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
+            btnLeftScobka.Location = new Point(30, 401);
+            btnLeftScobka.Name = "btnLeftScobka";
+            btnLeftScobka.Size = new Size(27, 53);
+            btnLeftScobka.TabIndex = 19;
+            btnLeftScobka.Text = "(";
+            btnLeftScobka.UseVisualStyleBackColor = true;
+            // 
+            // btnRightScobka
+            // 
+            btnRightScobka.Anchor = AnchorStyles.None;
+            btnRightScobka.Font = new Font("Segoe UI", 20F, FontStyle.Regular, GraphicsUnit.Point);
+            btnRightScobka.Location = new Point(72, 401);
+            btnRightScobka.Name = "btnRightScobka";
+            btnRightScobka.Size = new Size(27, 53);
+            btnRightScobka.TabIndex = 20;
+            btnRightScobka.Text = ")";
+            btnRightScobka.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(431, 482);
+            Controls.Add(btnRightScobka);
+            Controls.Add(btnLeftScobka);
             Controls.Add(btnDot);
             Controls.Add(btnUmn);
             Controls.Add(btnRazdel);
@@ -311,5 +337,7 @@
         private Button btnRazdel;
         private Button btnUmn;
         private Button btnDot;
+        private Button btnLeftScobka;
+        private Button btnRightScobka;
     }
 }

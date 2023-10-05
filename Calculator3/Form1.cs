@@ -19,6 +19,8 @@ namespace Calculator3
             this.btn8.Click += new EventHandler(buttonUse);
             this.btn9.Click += new EventHandler(buttonUse);
             this.btn0.Click += new EventHandler(buttonUse);
+            this.btnLeftScobka.Click += new EventHandler(buttonUse);
+            this.btnRightScobka.Click += new EventHandler(buttonUse);
             this.btnDot.Click += new EventHandler(buttonUse);
             this.btnPlus.Click += new EventHandler(buttonUse);
             this.btnMinus.Click += new EventHandler(buttonUse);
@@ -26,8 +28,6 @@ namespace Calculator3
             this.btnUmn.Click += new EventHandler(buttonUse);
             //this.btnAnswer.Click += new EventHandler(buttonUse);
             this.btnAnswer.Click += new EventHandler(buttonAnswer);
-
-            txtB1.Text = " ";
         }
 
         private void btnAnswer_Click(object sender, EventArgs e)
@@ -39,112 +39,225 @@ namespace Calculator3
         {
             Button button = (Button)sender;
             string textBut = button.Text;
-            int nuber;
-            if (int.TryParse(button.Text, out nuber)) //если ввожу число
+
+            if (char.IsDigit(textBut.First())) //если ввожу число
             {
-                if (txtB1.Text[0] == ' ') //если первый символ не пробел //пишу число
+                //если перва цифра чмсла - 0 и нет зап€той после
+                if (txtB1.Text != "" && txtB1.Text[left(txtB1.Text, txtB1.Text.Length - 1)] == '0' && rightDot(txtB1.Text, left(txtB1.Text, txtB1.Text.Length - 1)) < 0)
                 {
+                    // "..0" + "{0..9}" => "..{0..9}"
                     string text = txtB1.Text;
                     int ind = text.Length - 1;
-                    text = text.Remove(ind);
+                    text = text.Remove(left(txtB1.Text, txtB1.Text.Length - 1));
                     txtB1.Text = text + textBut;
+                    //MessageBox.Show("gg"+ txtB1.Text[right(txtB1.Text, txtB1.Text.Length - 1)] + "gg");
                 }
                 else
                 {
-                    //если ноль до зап€той-мен€ю
-                    if (txtB1.Text[left(txtB1.Text, txtB1.Text.Length - 1)] == '0' && rightDot(txtB1.Text, left(txtB1.Text, txtB1.Text.Length - 1)) < 0)
+                    if (txtB1.Text !="")
                     {
-                        string text = txtB1.Text;
-                        int ind = text.Length - 1;
-                        text = text.Remove(left(txtB1.Text, txtB1.Text.Length - 1));
-                        txtB1.Text = text + textBut;
-                        //MessageBox.Show("gg"+ txtB1.Text[right(txtB1.Text, txtB1.Text.Length - 1)] + "gg");
+                        if (txtB1.Text.Last() != ')')
+                        {
+                            // "..{0..9/+-*,(}" + "{0..9}" => "..{0..9/+-*,(}{0..9}"
+                            // "..)" + "{0..9}" => "..)"
+                            txtB1.Text += textBut;
+                        }
                     }
                     else
                     {
+                        // "" + "{0..9}" => "{0..9}"
                         txtB1.Text += textBut;
                     }
+                    
                 }
             }
             else
             {
-                bool result = char.IsDigit(txtB1.Text.Last()); //если последний символ-число
-                if (result)
+                //поставить минус и зап€тую и скобку в начале
+                if (txtB1.Text == "")
                 {
-                    txtB1.Text += textBut;
-                }
-                else //если последний символ не число
-                {
-                    if (txtB1.Text.Last() != ' ')
+                    if (textBut == "-" || textBut == "(" || textBut == ",")
                     {
-                        string text = txtB1.Text;
-                        int ind = text.Length - 1;
-                        text = text.Remove(ind);
-                        txtB1.Text = text + textBut;
+                        //  "" + "{-(,}" => "{-(,}"   "" + "{+/*)}" => ""
+                        txtB1.Text += textBut;
+                    }
+                }
+                else
+                {
+                    //после числа поставить знак
+                    if (char.IsDigit(txtB1.Text.Last()))
+                    {
+                        //  "..{0..9}" + "{-+/*,)}" => "..{0..9}{-+/*,)}"
+                        if (textBut != "(")
+                        {
+                            txtB1.Text += textBut;
+                        }
+                    }
+                    else
+                    {
+                        //поставить минус если перед ним стоит * или /
+                        if (txtB1.Text.Last() == '/' || txtB1.Text.Last() == '*')
+                        {
+                            if (textBut == "-" || textBut == "(" || textBut == ",")
+                            {
+                                //   "../" + "{-(,}" => "../{-(,}"   "..*" + "{-(,}" => "..*{-(,}"
+                                //MessageBox.Show(""+txtB1.Text.Last());
+                                txtB1.Text += textBut;
+                            }
+                            else
+                            {
+                                //  "../" + "{*/+)}" => "..{*/+)}"   "..*" + "{*/+)}" => "..{*/+)}"
+                                txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                                txtB1.Text += textBut;
+                            }
+                        }
+                        else
+                        //убрать минус и / или * если добавл€етс€ знак
+                        if (txtB1.Text.Last() == '-')
+                        {
+                            if (txtB1.Text.Length != 1)
+                            {
+                                if (textBut == "(" || textBut == ",")
+                                {
+                                    // "..-" + "(" => "..-("
+                                    txtB1.Text += textBut;
+                                }
+                                else
+                                if (txtB1.Text[txtB1.Text.Length - 2] == '/' || txtB1.Text[txtB1.Text.Length - 2] == '*')
+                                {
+                                    //   "../-" + "{*/+,}" => "..{*/+,}"     "..*-" + "{*/+,}" => "..{*/+,}"
+                                    txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                                    txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                                    txtB1.Text += textBut;
+                                }
+                                else
+                                if (txtB1.Text[txtB1.Text.Length - 2] == '(')
+                                {
+                                    txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                                }
+                                else
+                                if (textBut != "," && textBut != ")")
+                                {
+                                    // "..-" + "{-+/*}" => "..-{-+/*}"
+                                    txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                                    txtB1.Text += textBut;
+                                }
+                            }
+                            else
+                            {
+                                if (textBut != "-")
+                                {
+                                    //  "-" + "{+/*,0)}" => ""  "-" + "(" => "-("
+                                    if (textBut == "(")
+                                    {
+                                        txtB1.Text += textBut;
+                                    }
+                                    else
+                                    {
+                                        txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                                    }
+                                    
+                                }
+                            }
+                        }
+                        else
+                        if (txtB1.Text.Last() == '(')
+                        {
+                            if (textBut == "-" || textBut == "(" || textBut == ",")
+                            {
+                                // "..(" + "{-(,}" => "..({-(,}"
+                                txtB1.Text += textBut;
+                            }
+                        }
+                        else
+                        if (txtB1.Text.Last() == '+')
+                        {
+                            if (textBut == "(" || textBut == ",")
+                            {
+                                // "..+" + "{(,}" => "..+{(,}"
+                                txtB1.Text += textBut;
+                            }
+                            else
+                            if(textBut != ")")
+                            {
+                                //  "..+" + "{-+/*}" => "..+{-+/*}"
+                                txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
+                                txtB1.Text += textBut;
+                            }
+                        }
+                        else
+                        if (txtB1.Text.Last() == ')')
+                        {
+                            // "..)" + "{-+/*)}" => "..){-+/*)}"
+                            if (textBut != "," && textBut != "(")
+                            {
+                                txtB1.Text += textBut;
+                            }
+                        }
                     }
 
                 }
+
             }
         }
         private void buttonAnswer(object sender, EventArgs e)
         {
             int ot = 0;
             int ido = txtB1.Text.Length - 1;
-            repeat(ot,ido);
+            repeat(ot, ido);
         }
-        public void repeat( int nn , int kk)//дл€ решени€ внутри скобок, если есть
+        public void repeat(int nn, int kk)//дл€ решени€ внутри скобок, если есть
         {
             int ot = nn;
             int ido = kk;//дл€ скобок
             int subnn = nn;
             int subkk = kk;
-            if (inScobka(nn,kk,ref ot, ref ido)) //скобка в диапазоне
+            if (inScobka(nn, kk, ref ot, ref ido)) //скобка в диапазоне
             {
                 repeat(ot, ido);//начало рекурсии
             }
+
+            if (!inScobka(0, txtB1.Text.Length - 1, ref ot, ref ido)) //скобки во всей строке
+            {
+                ot += 1;
+                ido -= 1;
+                if (oper(txtB1.Text) > 0)
+                {
+                    double ch1 = chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text)), oper(txtB1.Text) - 1);
+                    double ch2 = chislo(txtB1.Text, oper(txtB1.Text) + 1, right(txtB1.Text, oper(txtB1.Text)));
+
+                    txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString(), left(txtB1.Text, oper(txtB1.Text)), right(txtB1.Text, oper(txtB1.Text)));
+                    repeat(0, txtB1.Text.Length - 1);
+                }
+
+            }
             else
             {
-                if (!inScobka(0,txtB1.Text.Length-1,ref ot,ref ido)) //скобки во всей строке
+                ot = nn;
+                ido = kk;
+                if (oper(txtB1.Text) < 0)//если конечна€ рекурси€
                 {
-                    ot += 1;
-                    ido -= 1;
-                    if (oper(txtB1.Text) > 0)
-                    {
-                        double ch1 = chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text)), oper(txtB1.Text) - 1);
-                        double ch2 = chislo(txtB1.Text, oper(txtB1.Text) + 1, right(txtB1.Text, oper(txtB1.Text)));
+                    subnn = 0;
+                    subkk = txtB1.Text.Length - 1;
+                    //MessageBox.Show("nn=" + subnn + " kk=" + subkk,"subbbb");
+                }
+                //MessageBox.Show("nn=" + subnn + " kk=" + subkk);
+                string sub = txtB1.Text.Substring(subnn, subkk - subnn + 1);
+                if (oper(sub) > 0)//если есть опреаторы
+                {
+                    //MessageBox.Show(left(primer, oper(primer)).ToString());
+                    double ch1 = chislo(sub, left(sub, oper(sub)), oper(sub) - 1);
+                    double ch2 = chislo(sub, oper(sub) + 1, right(sub, oper(sub)));
 
-                        txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString(), left(txtB1.Text, oper(txtB1.Text)), right(txtB1.Text, oper(txtB1.Text)));
-                        repeat(0, txtB1.Text.Length - 1);
-                    }
-                    
+                    txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, sub[oper(sub)]).ToString(), ot - 1, ido + 1); //left(sub, oper(sub)), right(sub, oper(sub)));
+                                                                                                                      //MessageBox.Show(resOfOper(ch1, ch2, sub[oper(sub)]).ToString(),"resul");
+                    repeat(0, txtB1.Text.Length - 1);
                 }
-                else
-                {
-                    ot = nn;
-                    ido = kk;
-                    if (oper(txtB1.Text) < 0)//если конечна€ рекурси€
-                    {
-                        subnn = 0;
-                        subkk = txtB1.Text.Length-1;
-                        //MessageBox.Show("nn=" + subnn + " kk=" + subkk,"subbbb");
-                    }
-                    //MessageBox.Show("nn=" + subnn + " kk=" + subkk);
-                    string sub = txtB1.Text.Substring(subnn,subkk-subnn+1);
-                    if (oper(sub) > 0)//если есть опреаторы
-                    {
-                        //MessageBox.Show(left(primer, oper(primer)).ToString());
-                        double ch1 = chislo(sub, left(sub, oper(sub)), oper(sub) - 1);
-                        double ch2 = chislo(sub, oper(sub) + 1, right(sub, oper(sub)));
-                
-                        txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, sub[oper(sub)]).ToString(), ot-1, ido+1); //left(sub, oper(sub)), right(sub, oper(sub)));
-                        //MessageBox.Show(resOfOper(ch1, ch2, sub[oper(sub)]).ToString(),"resul");
-                        repeat(0,txtB1.Text.Length-1);
-                    }
-                }
-                //MessageBox.Show("nn="+nn+" kk="+kk+" ot="+ot+" ido="+ido,"fe");
             }
+            //MessageBox.Show("nn="+nn+" kk="+kk+" ot="+ot+" ido="+ido,"fe");
+
             //MessageBox.Show("nn=" + nn + " kk=" + kk + " ot=" + ot + " ido=" + ido, "sub");
-            
+
         }
         public double chislo(string diap, int ot, int ido)//выдает число типа дабл если дать диапозон числа
         {
@@ -152,7 +265,7 @@ namespace Calculator3
             provider.NumberDecimalSeparator = ",";
             provider.NumberGroupSeparator = ".";
             provider.NumberGroupSizes = new int[] { 3 };
-            MessageBox.Show(diap+"  ");
+            //MessageBox.Show(diap+"  ");
             return Convert.ToDouble(diap.Substring(ot, ido - ot + 1), provider);
         }
         public int oper(string diap)//выдает идентификатор самой приоритетной операции
@@ -237,14 +350,14 @@ namespace Calculator3
                     counterOfleftScobok++;
                     if (counterOfleftScobok == 1)
                     {
-                        leftScobka = i+1;
+                        leftScobka = i + 1;
                     }
                     result = true;
                 }
                 if (txtB1.Text[i] == ')')
                 {
                     counterOfleftScobok--;
-                    if (counterOfleftScobok == 0) { rightScobka = i-1; break; }
+                    if (counterOfleftScobok == 0) { rightScobka = i - 1; break; }
                 }
             }
             return result;
@@ -252,18 +365,14 @@ namespace Calculator3
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            txtB1.Text = " ";
+            txtB1.Text = "";
         }
 
         private void btnDel_Click(object sender, EventArgs e)
         {
-            if (txtB1.Text.Length > 1)
+            if (txtB1.Text.Length > 0)
             {
                 txtB1.Text = txtB1.Text.Remove(txtB1.Text.Length - 1);
-            }
-            else
-            {
-                txtB1.Text = " ";
             }
         }
     }
