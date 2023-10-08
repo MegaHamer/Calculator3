@@ -326,6 +326,33 @@ namespace Calculator3
                         {
                             if (char.IsDigit(diap[i - 1]) == false)
                             {
+                                if (diap[i] == '-')
+                                {
+                                    if (diap[i - 1] == '-')
+                                    {
+                                        if ((i-1) != 0)
+                                        {
+                                            txtB1.Text = zamena(
+                                                            txtB1.Text,
+                                                            "+",
+                                                            i - 1, i);
+                                        }
+                                        else
+                                        {
+                                            txtB1.Text = zamena(
+                                                            txtB1.Text,
+                                                            "",
+                                                            i - 1, i);
+                                        }
+                                        
+                                    }else if (diap[i - 1] == '+')
+                                    {
+                                        txtB1.Text = zamena(
+                                                            txtB1.Text,
+                                                            "-",
+                                                            i - 1, i);
+                                    }
+                                }
                                 continue;
                             }
                             else
