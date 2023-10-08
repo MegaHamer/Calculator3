@@ -204,34 +204,70 @@ namespace Calculator3
         {
             int ot = 0;
             int ido = txtB1.Text.Length - 1;
-            repeat(ot, ido);
-        }
-        public void repeat(int nn, int kk)//для решения внутри скобок, если есть
-        {
-            int ot = nn;
-            int ido = kk;//для скобок
-            int subnn = nn;
-            int subkk = kk;
-            if (inScobka(nn, kk, ref ot, ref ido)) //скобка в диапазоне
+            if (countScobka(txtB1.Text, ot, ido) % 2 == 0)
             {
-                repeat(ot, ido);//начало рекурсии
-            }
-
-            if (!inScobka(0, txtB1.Text.Length - 1, ref ot, ref ido)) //скобки во всей строке
-            {
-                ot += 1;
-                ido -= 1;
-                if (oper(txtB1.Text) > 0)
+                while (oper(txtB1.Text, 0, txtB1.Text.Length-1) > 0 || countScobka(txtB1.Text,0,txtB1.Text.Length-1)>0)
                 {
-                    double ch1 = chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text)), oper(txtB1.Text) - 1);
-                    double ch2 = chislo(txtB1.Text, oper(txtB1.Text) + 1, right(txtB1.Text, oper(txtB1.Text)));
-
-                    txtB1.Text = zamena(txtB1.Text, resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text)]).ToString(), left(txtB1.Text, oper(txtB1.Text)), right(txtB1.Text, oper(txtB1.Text)));
-                    repeat(0, txtB1.Text.Length - 1);
+                    //MessageBox.Show("Reapeat");
+                    repeat(ot, txtB1.Text.Length-1);
                 }
-
             }
             else
+            {
+                MessageBox.Show("Ошибка");
+            }
+            
+        }
+        public void repeat(int nn, int kk)//для решения внутри диапозона (скобок)
+        {
+            int ot = nn; int ido = kk; // переменные для решения внутри скобок
+            int subnn = nn;
+            int subkk = kk;
+            //MessageBox.Show("Start");
+            if (inScobka(nn, kk, ref ot, ref ido)) //проверка на наличие скобок
+            {
+                repeat(ot+1, ido-1);//начало рекурсии (внутри скобок)
+            }
+            else
+            if (countScobka(txtB1.Text,0,txtB1.Text.Length-1)>0) //если есть скобки -> я в скобках
+            {
+                //MessageBox.Show("Vscobka");
+                if (oper(txtB1.Text, nn, kk) > 0)
+                {
+                    //MessageBox.Show("Нашел опреатор");
+                    double ch1 = chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text, nn, kk)), oper(txtB1.Text, nn, kk) - 1);
+                    double ch2 = chislo(txtB1.Text, oper(txtB1.Text, nn, kk) + 1, right(txtB1.Text, oper(txtB1.Text, nn, kk)));
+                    //MessageBox.Show("  ");
+                    txtB1.Text = zamena(
+                        txtB1.Text, 
+                        resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text, nn, kk)]).ToString(),
+                        left(txtB1.Text, oper(txtB1.Text, nn, kk)),
+                        right(txtB1.Text, oper(txtB1.Text, nn, kk)));
+                   // MessageBox.Show("");
+                }
+                else
+                {
+                   // MessageBox.Show("не Нашел опреатор");
+                    txtB1.Text = zamena(
+                        txtB1.Text,
+                        txtB1.Text.Substring(nn,kk-nn+1),
+                        nn-1,kk+1);
+                }
+                
+            }
+            else
+            {
+                double ch1 = chislo(txtB1.Text, left(txtB1.Text, oper(txtB1.Text, nn, kk)), oper(txtB1.Text, nn, kk) - 1);
+                double ch2 = chislo(txtB1.Text, oper(txtB1.Text, nn, kk) + 1, right(txtB1.Text, oper(txtB1.Text, nn, kk)));
+               // MessageBox.Show("  ");
+                txtB1.Text = zamena(
+                    txtB1.Text,
+                    resOfOper(ch1, ch2, txtB1.Text[oper(txtB1.Text, nn, kk)]).ToString(),
+                    left(txtB1.Text, oper(txtB1.Text, nn, kk)),
+                    right(txtB1.Text, oper(txtB1.Text, nn, kk)));
+                //MessageBox.Show("");
+            }
+            /*else
             {
                 ot = nn;
                 ido = kk;
@@ -253,7 +289,7 @@ namespace Calculator3
                                                                                                                       //MessageBox.Show(resOfOper(ch1, ch2, sub[oper(sub)]).ToString(),"resul");
                     repeat(0, txtB1.Text.Length - 1);
                 }
-            }
+            }*/
             //MessageBox.Show("nn="+nn+" kk="+kk+" ot="+ot+" ido="+ido,"fe");
 
             //MessageBox.Show("nn=" + nn + " kk=" + kk + " ot=" + ot + " ido=" + ido, "sub");
@@ -265,22 +301,43 @@ namespace Calculator3
             provider.NumberDecimalSeparator = ",";
             provider.NumberGroupSeparator = ".";
             provider.NumberGroupSizes = new int[] { 3 };
-            //MessageBox.Show(diap+"  ");
+           // MessageBox.Show(diap+"  "+"\n ot"+ot+"\n ido"+ido);
             return Convert.ToDouble(diap.Substring(ot, ido - ot + 1), provider);
         }
-        public int oper(string diap)//выдает идентификатор самой приоритетной операции
+        public int oper(string diap, int ot, int ido)//выдает идентификатор самой приоритетной операции
         {
             char[] operatori = { '/', '*', '+', '-' };
             for (int j = 0; j < operatori.Length; j++)
             {
-                for (int i = 0; i < diap.Length; i++)
+                for (int i = ot; i <= ido; i++)
                 {
+                    //MessageBox.Show("oper"+ot+" "+ido + "  "+ diap+ "  "+ i + "  " + diap[i]+ " " + operatori[j] + " " + res);
                     if (diap[i] == operatori[j])
                     {
-                        return i;
+                        //MessageBox.Show("oper2" + ot + " " + ido + "  " + diap + "  " + i + "  " + diap[i] + " " + operatori[j] + " ");
+                        if (i == 0)
+                        {
+                            if (diap[i] == '-')
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            if (char.IsDigit(diap[i-1])==false)
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                return i;
+                            }
+                        }
+                        
                     }
                 }
             }
+            //MessageBox.Show("oper3" + ot + " " + ido + "  " + diap +" "+res);
             return -1;
 
         }
@@ -300,14 +357,15 @@ namespace Calculator3
             string result = ishod.Substring(0, ot);
             result += vstavka;
             result += ishod.Substring(ido + 1, ishod.Length - ido - 1);
+            //MessageBox.Show("fefe");
             return result;
             // 0 1 2 3+ 4 5
         }
         public int right(string diap, int i)//ищет крайнюю цифру в числе
         {
-            for (int j = i + 1; j < diap.Length; j++)
+            for (int j = i + 2; j < diap.Length; j++)
             {
-                if (char.IsDigit(diap[j]) != true && diap[j] != ',')
+                if (char.IsDigit(diap[j]) != true && diap[j] != ',' )
                 {
                     return j - 1;
                 }
@@ -327,12 +385,30 @@ namespace Calculator3
         }
         public int left(string diap, int i)//ищет крайнюю цифру в числе
         {
+            //MessageBox.Show("Left"+i);
             for (int j = i - 1; j >= 0; j--)
             {
                 bool result = char.IsDigit(diap[j]);
                 if (result == false && diap[j] != ',')
                 {
-                    return j + 1;
+                    if (diap[j] == '-')
+                    {
+                        if (j != 0)
+                        {
+                            if (diap[j-1]=='/' || diap[j-1]=='*')
+                            {
+                                return j;
+                            }
+                            else
+                            {
+                                return j + 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return j + 1;
+                    }
                 }
             }
             return 0;
@@ -350,17 +426,27 @@ namespace Calculator3
                     counterOfleftScobok++;
                     if (counterOfleftScobok == 1)
                     {
-                        leftScobka = i + 1;
+                        leftScobka = i;
                     }
                     result = true;
                 }
                 if (txtB1.Text[i] == ')')
                 {
                     counterOfleftScobok--;
-                    if (counterOfleftScobok == 0) { rightScobka = i - 1; break; }
+                    if (counterOfleftScobok == 0) { rightScobka = i; break; }
                 }
             }
             return result;
+        }
+        public int countScobka(string text, int ot, int ido)
+        {
+            int count=0;
+            for (int i = ot; i<=ido;i++)
+            {
+                if (text[i]=='(' || text[i]==')')
+                { count++; }
+            }
+            return count;
         }
 
         private void btnClear_Click(object sender, EventArgs e)
